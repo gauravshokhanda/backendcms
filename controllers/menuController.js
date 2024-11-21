@@ -13,21 +13,49 @@ exports.getMenus = async (req, res) => {
 // Create a new menu item
 exports.createMenu = async (req, res) => {
     try {
-        const newMenu = new Menu(req.body);
+        const { name, link, sortOrder } = req.body;
+
+        // Check if sortOrder already exists
+        const existingMenu = await Menu.findOne({ sortOrder });
+        if (existingMenu) {
+            return res.status(400).json({ message: "Sort order must be unique." });
+        }
+
+        // Create new menu
+        const newMenu = new Menu({ name, link, sortOrder });
         await newMenu.save();
+
         res.status(201).json(newMenu);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// Update a menu item
 exports.updateMenu = async (req, res) => {
     try {
-        const updatedMenu = await Menu.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(updatedMenu);
+        const { id } = req.params;
+        const { sortOrder, name, link } = req.body;
+
+        // Check if another menu item already has the same sortOrder
+        const existingMenu = await Menu.findOne({ sortOrder, _id: { $ne: id } });
+        if (existingMenu) {
+            return res.status(400).json({ message: "Sort order must be unique." });
+        }
+
+        // Update the menu item
+        const updatedMenu = await Menu.findByIdAndUpdate(
+            id,
+            { name, link, sortOrder },
+            { new: true, runValidators: true } // Enforce schema validation and return the updated document
+        );
+
+        if (!updatedMenu) {
+            return res.status(404).json({ message: "Menu not found." });
+        }
+
+        res.status(200).json(updatedMenu);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
