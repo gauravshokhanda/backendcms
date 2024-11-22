@@ -4,17 +4,17 @@ const {
     getAllBlogs,
     getBlogById,
     updateBlog,
-    deleteBlog
+    deleteBlog,
 } = require("../controllers/blogController.js");
 const authenticate = require("../middleware/authenticate.js");
+const upload = require("../middleware/upload.js");
 
 const router = express.Router();
 
-
-router.post("/", authenticate, createBlog); // Only authenticated users can create blogs
+router.post("/", authenticate, upload.single("image"), createBlog); // Add image upload
 router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
-router.put("/:id", authenticate, updateBlog); // Only authenticated users can update
-router.delete("/:id", authenticate, deleteBlog); // Only authenticated users can delete 
+router.put("/:id", authenticate, upload.single("image"), updateBlog); // Allow image update
+router.delete("/:id", authenticate, deleteBlog);
 
 module.exports = router;

@@ -46,7 +46,7 @@ exports.updateMenu = async (req, res) => {
         const updatedMenu = await Menu.findByIdAndUpdate(
             id,
             { name, link, sortOrder },
-            { new: true, runValidators: true } // Enforce schema validation and return the updated document
+            { new: true, runValidators: true } // Enforce schema validation and return 
         );
 
         if (!updatedMenu) {
