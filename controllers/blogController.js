@@ -1,6 +1,6 @@
 const Blog = require("../models/Blog.js");
 
-// import Blog, { find, findById, findByIdAndUpdate, findByIdAndDelete } from "../models/Blog.js";
+
 
 // Create a blog
 const BASE_URL = process.env.BASE_URL || "http://localhost:5000"; // Define base URL
@@ -26,6 +26,8 @@ exports.createBlog = async (req, res) => {
     }
 };
 
+
+
 exports.updateBlog = async (req, res) => {
     try {
         const { title, content, author, tags, published } = req.body;
@@ -37,6 +39,7 @@ exports.updateBlog = async (req, res) => {
             author,
             tags,
             published,
+            
         };
 
         if (image) updatedData.image = image;
@@ -57,6 +60,25 @@ exports.updateBlog = async (req, res) => {
 };
 
 
+
+exports.togglePublishStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { publish } = req.body;
+
+        const isPublished = publish.toLowerCase() === "yes";
+
+        const blog = await Blog.findByIdAndUpdate(id, { published: isPublished }, { new: true });
+
+        if (!blog) {
+            return res.status(404).json({ success: false, message: "Blog not found" });
+        }
+
+        res.status(200).json({ success: true, message: `Blog has been ${isPublished ? "published" : "unpublished"}`, data: blog });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error updating publish status", error });
+    }
+}
 
 
 // Get all blogs

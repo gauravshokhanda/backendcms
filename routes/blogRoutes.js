@@ -5,6 +5,7 @@ const {
     getBlogById,
     updateBlog,
     deleteBlog,
+    togglePublishStatus
 } = require("../controllers/blogController.js");
 const authenticate = require("../middleware/authenticate.js");
 const upload = require("../middleware/upload.js");
@@ -16,5 +17,6 @@ router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
 router.put("/:id", authenticate, upload.single("image"), updateBlog); // Allow image update
 router.delete("/:id", authenticate, deleteBlog);
+router.patch("/:id/publish", authenticate, togglePublishStatus);
 
 module.exports = router;
