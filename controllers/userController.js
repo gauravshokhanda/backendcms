@@ -20,6 +20,14 @@ exports.registerUser = async (req, res) => {
   try {
     const userExists = await User.findOne({ email });
 
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to Our App",
+      text: `Hi ${user.name}, welcome to our platform!`,
+      html: `<h1>Hi ${user.name}</h1><p>Welcome to our platform!</p>`,
+    });
+    res.status(201).json({ message: "User registered and email sent!" });
+
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }

@@ -1,14 +1,15 @@
 const Content = require("../models/Content.js");
 
-// Get all content
 exports.getAllContent = async (req, res) => {
     try {
-        const contents = await Content.find();
+        const filter = req.query.status ? { status: req.query.status } : {};
+        const contents = await Content.find(filter); // Filter by status
         res.json(contents);
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 
 // Get content by slug
 exports.getContentBySlug = async (req, res) => {
@@ -21,10 +22,10 @@ exports.getContentBySlug = async (req, res) => {
     }
 };
 
-// Create new content
 exports.createContent = async (req, res) => {
     try {
-        const newContent = new Content(req.body);
+        const {  slug, body, status } = req.body; // Include status
+        const newContent = new Content({  slug, body, status });
         await newContent.save();
         res.status(201).json(newContent);
     } catch (err) {
@@ -32,17 +33,22 @@ exports.createContent = async (req, res) => {
     }
 };
 
-// Update content
+
 exports.updateContent = async (req, res) => {
     try {
-        const updatedContent = await Content.findOneAndUpdate({ slug: req.params.slug }, req.body, {
-            new: true,
-        });
+        const {  body, status } = req.body; // Include status
+        const updatedContent = await Content.findOneAndUpdate(
+            { slug: req.params.slug },
+            {  body, status }, // Update status
+            { new: true }
+        );
+        if (!updatedContent) return res.status(404).send("Content not found");
         res.json(updatedContent);
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 
 // Delete content
 exports.deleteContent = async (req, res) => {

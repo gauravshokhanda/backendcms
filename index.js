@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const blogRoutes = require("./routes/blogRoutes.js");
 const menuRoutes = require("./routes/menuRoutes.js");
 const contentRoutes = require("./routes/contentRoutes.js");
+const contactRoutes = require("./routes/contactRoutes.js");
 
 
 
@@ -39,7 +40,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/menus", menuRoutes);
 app.use("/api/contents", contentRoutes);
-
+app.use("/api/contacts", contactRoutes);
 
 
 
