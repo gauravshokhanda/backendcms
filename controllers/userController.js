@@ -8,7 +8,7 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-// Register a new user
+
 exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -18,23 +18,18 @@ exports.registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
 
   try {
+    // Check if the user already exists
     const userExists = await User.findOne({ email });
-
-    await sendEmail({
-      to: user.email,
-      subject: "Welcome to Our App",
-      text: `Hi ${user.name}, welcome to our platform!`,
-      html: `<h1>Hi ${user.name}</h1><p>Welcome to our platform!</p>`,
-    });
-    res.status(201).json({ message: "User registered and email sent!" });
 
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create the user
     const user = await User.create({
       name,
       email,
@@ -42,8 +37,9 @@ exports.registerUser = async (req, res) => {
       role: role || "admin", // Default role is 'user'
     });
 
+    // Send response after user creation
     if (user) {
-      res.status(201).json({
+      return res.status(201).json({
         _id: user._id,
         name: user.name,
         email: user.email,
@@ -51,12 +47,14 @@ exports.registerUser = async (req, res) => {
         token: generateToken(user._id),
       });
     } else {
-      res.status(400).json({ message: "Invalid user data" });
+      return res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // User login
 exports.authUser = async (req, res) => {
