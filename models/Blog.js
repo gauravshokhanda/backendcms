@@ -16,8 +16,9 @@ const blogSchema = new mongoose.Schema({
     },
     tags: [String],
     published: {
-        type: Boolean,
-        default: false,
+        type: String, // "Yes" or "No"
+        enum: ["Yes", "No"], // Ensure only these values are allowed
+        default: "No", // Default to "No"
     },
     image: {
         type: String, // Path to image

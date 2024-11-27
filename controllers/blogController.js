@@ -7,8 +7,12 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:5000"; // Define base
 
 exports.createBlog = async (req, res) => {
     try {
-        const { title, content, author, tags, published } = req.body;
-        const image = req.file ? `${BASE_URL}/${req.file.path.replace(/\\/g, '/')}` : null; // Generate full URL
+        const { title, content, author, tags, published = "No" } = req.body;
+        const image = req.file ? `${BASE_URL}/${req.file.path.replace(/\\/g, '/')}` : null;
+
+        if (!["Yes", "No"].includes(published)) {
+            return res.status(400).json({ success: false, message: "Invalid value for published field" });
+        }
 
         const blog = new Blog({
             title,
@@ -28,6 +32,7 @@ exports.createBlog = async (req, res) => {
 
 
 
+
 exports.updateBlog = async (req, res) => {
     try {
         const { title, content, author, tags, published } = req.body;
@@ -38,11 +43,16 @@ exports.updateBlog = async (req, res) => {
             content,
             author,
             tags,
-            published,
-            
         };
 
         if (image) updatedData.image = image;
+
+        if (published) {
+            if (!["Yes", "No"].includes(published)) {
+                return res.status(400).json({ success: false, message: "Invalid value for published field" });
+            }
+            updatedData.published = published;
+        }
 
         const blog = await Blog.findByIdAndUpdate(req.params.id, updatedData, {
             new: true,
@@ -61,24 +71,32 @@ exports.updateBlog = async (req, res) => {
 
 
 
+
 exports.togglePublishStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { publish } = req.body;
 
-        const isPublished = publish.toLowerCase() === "yes";
+        if (!["Yes", "No"].includes(publish)) {
+            return res.status(400).json({ success: false, message: "Invalid value for publish field" });
+        }
 
-        const blog = await Blog.findByIdAndUpdate(id, { published: isPublished }, { new: true });
+        const blog = await Blog.findByIdAndUpdate(id, { published: publish }, { new: true });
 
         if (!blog) {
             return res.status(404).json({ success: false, message: "Blog not found" });
         }
 
-        res.status(200).json({ success: true, message: `Blog has been ${isPublished ? "published" : "unpublished"}`, data: blog });
+        res.status(200).json({
+            success: true,
+            message: `Blog has been ${publish === "Yes" ? "published" : "unpublished"}`,
+            data: blog
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error updating publish status", error });
     }
-}
+};
+
 
 
 // Get all blogs

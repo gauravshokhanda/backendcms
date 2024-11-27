@@ -1,6 +1,7 @@
 const Contact = require("../models/contactModel.js");
 
 // Submit Contact Form
+
 exports.submitContactForm = async (req, res) => {
     try {
         const { name, email, number, subject, message } = req.body;
@@ -10,8 +11,15 @@ exports.submitContactForm = async (req, res) => {
             return res.status(400).json({ error: "All fields are required." });
         }
 
-        // Create new contact document
-        const newContact = new Contact({ name, email, number, subject, message });
+        // Create new contact document with resolved as false by default
+        const newContact = new Contact({
+            name,
+            email,
+            number,
+            subject,
+            message,
+            resolved: false, // Default value is false
+        });
         await newContact.save();
 
         res.status(201).json({ message: "Contact form submitted successfully." });
@@ -19,6 +27,7 @@ exports.submitContactForm = async (req, res) => {
         res.status(500).json({ error: "Server error. Please try again later." });
     }
 };
+
 
 // Get All Submitted Forms (Optional)
 exports.getAllContacts = async (req, res) => {
@@ -34,17 +43,17 @@ exports.getAllContacts = async (req, res) => {
 exports.updateContactForm = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, number, subject, message } = req.body;
+        const { name, email, number, subject, message, resolved } = req.body;
 
         // Validate request
         if (!name || !email || !number || !subject || !message) {
             return res.status(400).json({ error: "All fields are required." });
         }
 
-        // Update contact document
+        // Update contact document, including resolved status
         const updatedContact = await Contact.findByIdAndUpdate(
             id,
-            { name, email, number, subject, message },
+            { name, email, number, subject, message, resolved },
             { new: true, runValidators: true }
         );
 
@@ -52,11 +61,15 @@ exports.updateContactForm = async (req, res) => {
             return res.status(404).json({ error: "Contact not found." });
         }
 
-        res.status(200).json({ message: "Contact updated successfully.", updatedContact });
+        res.status(200).json({
+            message: "Contact updated successfully.",
+            updatedContact,
+        });
     } catch (error) {
         res.status(500).json({ error: "Server error. Please try again later." });
     }
 };
+
 
 // Delete Contact Form
 exports.deleteContactForm = async (req, res) => {

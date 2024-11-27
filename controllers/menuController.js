@@ -10,6 +10,19 @@ exports.getMenus = async (req, res) => {
     }
 };
 
+exports.getUsedSortOrders = async (req, res) => {
+    try {
+        // Use Mongoose distinct method to fetch unique sortOrder values
+        const usedSortOrders = await Menu.find().distinct("sortOrder");
+
+        // Send response
+        res.status(200).json({ sortOrders: usedSortOrders });
+    } catch (err) {
+        // Handle errors
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};
+
 // Create a new menu item
 exports.createMenu = async (req, res) => {
     try {
