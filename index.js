@@ -14,7 +14,7 @@ dotenv.config();
 
 // Middleware
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://aitsadmin.netlify.app"],
+  origin: ["http://localhost:3000", "https://aitstax.netlify.app"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
