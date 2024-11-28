@@ -8,15 +8,13 @@ const menuRoutes = require("./routes/menuRoutes.js");
 const contentRoutes = require("./routes/contentRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 
-
-
 // Initialize Express
 const app = express();
 dotenv.config();
 
 // Middleware
 const corsOptions = {
-  origin: ["http://localhost:8081"],
+  origin: "*",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -24,7 +22,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use("/uploads", express.static("uploads")); 
+app.use("/uploads", express.static("uploads"));
 
 // Connect to MongoDB
 mongoose
@@ -41,8 +39,6 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/menus", menuRoutes);
 app.use("/api/contents", contentRoutes);
 app.use("/api/contacts", contactRoutes);
-
-
 
 // Start server
 const PORT = process.env.PORT || 5000;
