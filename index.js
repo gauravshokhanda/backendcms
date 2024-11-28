@@ -13,8 +13,19 @@ const app = express();
 dotenv.config();
 
 // Middleware
+const allowedOrigins = [
+  "https://aitstax.netlify.app", // Your production frontend
+  "http://localhost:3000", // For local development
+];
+
 const corsOptions = {
-  origin: "*",
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
