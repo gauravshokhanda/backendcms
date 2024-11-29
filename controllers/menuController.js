@@ -26,7 +26,7 @@ exports.getUsedSortOrders = async (req, res) => {
 // Create a new menu item
 exports.createMenu = async (req, res) => {
     try {
-        const { name, link, sortOrder } = req.body;
+        const { name, link, sortOrder, meta_data, content } = req.body;
 
         // Check if sortOrder already exists
         const existingMenu = await Menu.findOne({ sortOrder });
@@ -35,7 +35,7 @@ exports.createMenu = async (req, res) => {
         }
 
         // Create new menu
-        const newMenu = new Menu({ name, link, sortOrder });
+        const newMenu = new Menu({ name, link, sortOrder, meta_data, content });
         await newMenu.save();
 
         res.status(201).json(newMenu);
@@ -47,7 +47,7 @@ exports.createMenu = async (req, res) => {
 exports.updateMenu = async (req, res) => {
     try {
         const { id } = req.params;
-        const { sortOrder, name, link } = req.body;
+        const { sortOrder, name, link, meta_data, content } = req.body;
 
         // Check if another menu item already has the same sortOrder
         const existingMenu = await Menu.findOne({ sortOrder, _id: { $ne: id } });
@@ -58,7 +58,7 @@ exports.updateMenu = async (req, res) => {
         // Update the menu item
         const updatedMenu = await Menu.findByIdAndUpdate(
             id,
-            { name, link, sortOrder },
+            { name, link, sortOrder, meta_data, content },
             { new: true, runValidators: true } // Enforce schema validation and return 
         );
 
