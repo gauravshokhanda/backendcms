@@ -7,6 +7,7 @@ const blogRoutes = require("./routes/blogRoutes.js");
 const menuRoutes = require("./routes/menuRoutes.js");
 const contentRoutes = require("./routes/contentRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
+const settingRoutes = require("./routes/settingRoutes.js");
 
 // Initialize Express
 const app = express();
@@ -40,6 +41,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/menus", menuRoutes);
 app.use("/api/contents", contentRoutes);
+app.use("/api/settings", settingRoutes);
 app.use("/api/contacts", contactRoutes);
 
 // Start server
