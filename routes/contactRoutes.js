@@ -6,14 +6,14 @@ const authenticate = require("../middleware/authenticate.js");
 const router = express.Router();
 
 // Route to submit the contact form
-router.post("/", authenticate, submitContactForm);
+router.post("/", submitContactForm);
 
 // Optional: Route to get all submitted forms
 router.get("/", getAllContacts);
 
 router.get("/:id", getContactById);
 
-router.put("/:id", authenticate, updateContactForm);
+router.put("/:id", updateContactForm);
 router.delete("/:id", deleteContactForm);
 
 module.exports = router;
