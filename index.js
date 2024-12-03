@@ -18,7 +18,11 @@ dotenv.config();
 // Middleware
 
 const corsOptions = {
-  origin: ["http://localhost:3000","http://127.0.0.1:5500"], // Allow your local development frontend
+  origin: [
+    "http://localhost:3000",
+    "http://127.0.0.1:5500",
+    "https://aisthtml.netlify.app",
+  ], // Allow your local development frontend
   credentials: true, // Allow cookies and credentials
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
