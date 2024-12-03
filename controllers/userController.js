@@ -8,7 +8,6 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-
 exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -34,7 +33,7 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "admin", // Default role is 'user'
+      role: role || "user", // Default role is 'user'
     });
 
     // Send response after user creation
@@ -54,7 +53,6 @@ exports.registerUser = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // User login
 exports.authUser = async (req, res) => {
