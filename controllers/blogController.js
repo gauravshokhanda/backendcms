@@ -1,8 +1,10 @@
 const Blog = require("../models/Blog.js");
+require("dotenv").config();
 
 // Create a blog
 const BASE_URL = process.env.BASE_URL; // Define base URL
 
+console.log(BASE_URL);
 exports.createBlog = async (req, res) => {
   try {
     const { title, content, author, tags, published = "No" } = req.body;
@@ -50,12 +52,10 @@ exports.updateBlog = async (req, res) => {
 
     if (published) {
       if (!["Yes", "No"].includes(published)) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Invalid value for published field",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Invalid value for published field",
+        });
       }
       updatedData.published = published;
     }
@@ -108,13 +108,11 @@ exports.togglePublishStatus = async (req, res) => {
       data: blog,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error updating publish status",
-        error,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error updating publish status",
+      error,
+    });
   }
 };
 
