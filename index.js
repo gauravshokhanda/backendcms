@@ -8,6 +8,8 @@ const menuRoutes = require("./routes/menuRoutes.js");
 const contentRoutes = require("./routes/contentRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 const settingRoutes = require("./routes/settingRoutes.js");
+const imageRoutes = require("./routes/imageRoutes.js");
+const clientRoutes = require("./routes/clientRoute.js");
 
 // Initialize Express
 const app = express();
@@ -43,6 +45,8 @@ app.use("/api/menus", menuRoutes);
 app.use("/api/contents", contentRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/featureimages", imageRoutes);
+app.use("/api/clients", clientRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
