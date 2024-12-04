@@ -2,18 +2,19 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const { addImage, updateImage, deleteImage, getImages, getImageById } = require("../controllers/imageController.js");
+const upload = require("../middleware/upload.js");
 
 // Multer setup for file upload
-const storage = multer.diskStorage({    
-    destination: (req, file, cb) => {
-        cb(null, "uploads");
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname);
-    },
-});
+// const storage = multer.diskStorage({    
+//     destination: (req, file, cb) => {
+//         cb(null, "uploads");
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + "-" + file.originalname);
+//     },
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 // Routes
 router.post("/", upload.single("image"), addImage);
