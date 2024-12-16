@@ -1,4 +1,5 @@
 const Blog = require("../models/Blog.js");
+
 require("dotenv").config();
 
 // Create a blog
@@ -7,7 +8,7 @@ const BASE_URL = process.env.BASE_URL; // Define base URL
 console.log(BASE_URL);
 exports.createBlog = async (req, res) => {
   try {
-    const { title, content, author, tags, published = "No" } = req.body;
+    const { title, content, author, tags, published = "No", slug } = req.body;
     const image = req.file
       ? `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
       : null;
@@ -18,6 +19,14 @@ exports.createBlog = async (req, res) => {
         .json({ success: false, message: "Invalid value for published field" });
     }
 
+    const generateSlug = (title) => {
+      return title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+        .replace(/\s+/g, "-"); // Replace spaces with hyphens
+    };
+    const generatedSlug = slug || generateSlug(title);
     const blog = new Blog({
       title,
       content,
@@ -25,6 +34,7 @@ exports.createBlog = async (req, res) => {
       tags,
       published,
       image,
+      slug: generatedSlug,
     });
 
     await blog.save();
@@ -36,7 +46,7 @@ exports.createBlog = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
   try {
-    const { title, content, author, tags, published } = req.body;
+    const { title, content, author, tags, published, slug } = req.body;
     const image = req.file
       ? `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
       : undefined;
@@ -58,6 +68,17 @@ exports.updateBlog = async (req, res) => {
         });
       }
       updatedData.published = published;
+    }
+    const generateSlug = (title) => {
+      return title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "") 
+        .replace(/\s+/g, "-"); 
+    };
+
+    if (title) {
+      updatedData.slug = slug || generateSlug(title);
     }
 
     const blog = await Blog.findByIdAndUpdate(req.params.id, updatedData, {
@@ -102,9 +123,8 @@ exports.togglePublishStatus = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Blog has been ${
-        publish === "Yes" ? "published" : "unpublished"
-      }`,
+      message: `Blog has been ${publish === "Yes" ? "published" : "unpublished"
+        }`,
       data: blog,
     });
   } catch (error) {
