@@ -5,17 +5,19 @@ const {
     getBlogById,
     updateBlog,
     deleteBlog,
-    togglePublishStatus
+    togglePublishStatus,
+    getBlogBySlug
 } = require("../controllers/blogController.js");
 const authenticate = require("../middleware/authenticate.js");
 const upload = require("../middleware/upload.js");
 
 const router = express.Router();
 
-router.post("/", authenticate, upload.single("image"), createBlog); // Add image upload
+router.post("/", authenticate, upload.single("image"), createBlog);
 router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
-router.put("/:id", authenticate, upload.single("image"), updateBlog); // Allow image update
+router.get("/slug/:slug", getBlogBySlug);
+router.put("/:id", authenticate, upload.single("image"), updateBlog);
 router.delete("/:id", authenticate, deleteBlog);
 router.patch("/:id/publish", authenticate, togglePublishStatus);
 

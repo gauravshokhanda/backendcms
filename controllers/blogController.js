@@ -73,8 +73,8 @@ exports.updateBlog = async (req, res) => {
       return title
         .toLowerCase()
         .trim()
-        .replace(/[^a-z0-9\s-]/g, "") 
-        .replace(/\s+/g, "-"); 
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
     };
 
     if (title) {
@@ -160,6 +160,23 @@ exports.getBlogById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.getBlogBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const blog = await Blog.findOne({ slug });
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
+    }
+    res.status(200).json({ success: true, data: blog });
+  }
+  catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+
+}
 
 // Delete a blog
 exports.deleteBlog = async (req, res) => {
