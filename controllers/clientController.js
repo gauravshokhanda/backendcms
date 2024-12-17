@@ -7,7 +7,11 @@ exports.createClient = async (req, res) => {
         await client.save();
         res.status(201).json(client);
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        if (err.code === 11000) {
+            res.status(400).json({ error: "Email already exists. Please use a different email." });
+        } else {
+            res.status(400).json({ error: err.message });
+        }
     }
 };
 
