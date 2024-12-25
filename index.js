@@ -10,6 +10,7 @@ const contactRoutes = require("./routes/contactRoutes.js");
 const settingRoutes = require("./routes/settingRoutes.js");
 const featureBlogimageRoutes = require("./routes/imageRoutes.js");
 const clientRoutes = require("./routes/clientRoute.js");
+const zohoRoutes = require("./routes/zohoRoutes");
 
 // Initialize Express
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api/settings", settingRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/featureimages", featureBlogimageRoutes);
 app.use("/api/clients", clientRoutes);
+app.use("/api/zoho", zohoRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
